@@ -17,6 +17,9 @@ Version: 2.1
 Version: 2.2
 1. rq enqueue塞入任务队列时的一个bug,已经绕过解决
 
+Version: 2.3
+1. 解决了curl调用rq的get_result时出现的0x80 code异常
+
 Future:  
 1. 使用rsa保证rpc通信安全  
 2. swift_rpc完善RQ异步任务队列  

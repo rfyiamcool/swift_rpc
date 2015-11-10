@@ -37,4 +37,7 @@ rq_conn = Queue(connection=redis_conn)
 fetch = Job.fetch
 
 if __name__ == "__main__":
-    print r.keys()[:10]
+    job_id = 'rq:job:d65aade8-5304-48d3-8477-9ac16f7cefd8'
+    job_id = job_id.split(':')[2] 
+    res = fetch(job_id.decode("utf-8", "ignore"),redis_conn)
+    print res.to_dict()
