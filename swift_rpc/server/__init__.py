@@ -40,9 +40,13 @@ class RPCServer(object):
 
     def start(self, host, port):
         self.log.info('Starting server on port {0}'.format(port))
-        app = web.Application(self._routes, debug=True)
-        app.listen(int(port))
-        ioloop.IOLoop.current().start()
+#        app = web.Application(self._routes, debug=True)
+#        app.listen(int(port),host)
+#        ioloop.IOLoop.current().start()
 
+        from tornado.httpserver import HTTPServer 
+        server = HTTPServer(web.Application(self._routes, debug=True),xheaders=True) 
+        server.listen(port, host)
+        ioloop.IOLoop.current().start()
 
 __all__ = ('RPCServer')

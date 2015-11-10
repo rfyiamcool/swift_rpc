@@ -32,6 +32,7 @@ class _Handler(web.RequestHandler):
 
         if REMOTE_IP_MODE:
             remote_ip = self.request.headers.get("X-Real-IP")
+            remote_ip = remote_ip if remote_ip else self.request.remote_ip
             if remote_ip not in REMOTE_ALLOW:
                 self.log.info('Received request from REMOTE IP {0}'.format(remote_ip))
                 self.write({'error': 'IP not allowed: {0}'.format(remote_ip)})

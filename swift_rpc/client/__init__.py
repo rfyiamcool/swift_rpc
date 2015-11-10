@@ -18,19 +18,19 @@ class _RPC(object):
         try:
             resp = requests.get(self._url, data=kwargs, headers=self.__HEADERS__)
         except Exception as e:
-            raise TornRPCClient.FailedCall(e)
+            raise RPCClient.FailedCall(e)
     
         if resp.status_code == 404:
-            raise TornRPCClient.MissingMethod(
+            raise RPCClient.MissingMethod(
               'No remote method found for {0}'.format(self._name))
     
         try:
             ret = json.loads(resp.content)
         except Exception as e:
-            raise TornRPCClient.InvalidSerializationError(e)
+            raise RPCClient.InvalidSerializationError(e)
     
         if 'error' in ret:
-            raise TornRPCClient.FailedCall(ret['error'])
+            raise RPCClient.FailedCall(ret['error'])
     
         return ret['response']
     
