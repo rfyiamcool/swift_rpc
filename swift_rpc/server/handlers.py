@@ -1,0 +1,87 @@
+from tornado import gen, log, web
+from tornado.concurrent import run_on_executor
+from concurrent.futures import ThreadPoolExecutor
+from swift_rpc.scheduler import q,r
+import msgpack
+
+class _Handler(web.RequestHandler):
+    __ALLOWEDUA__ = ('swift_rpc')
+
+    @gen.coroutine
+    def initialize(self):
+        self.log = log.logging.getLogger()
+        self.log.setLevel(log.logging.INFO)
+
+    @gen.coroutine
+    def prepare(self):
+        ua = self.request.headers.get('User-Agent')
+        if ua not in self.__ALLOWEDUA__:
+            self.log.info('Received request from UA {0}'.format(ua))
+            self.write({'error': 'User agent not allowed: {0}'.format(ua)})
+            self.finish()
+
+    @gen.coroutine
+    def args_kwargs(self):
+        args = []
+      # support positional arguments
+        if 'args' in self.request.arguments:
+            args = self.request.arguments['args']
+            del self.request.arguments['args']
+      # keyword arguments get passed as a list so extract them
+        kwargs = dict([(k, v[0]) for k, v in self.request.arguments.items()])
+        print kwargs
+        raise gen.Return((args, kwargs))
+
+class _Base(_Handler):
+
+    TYPE = 'synchronous'
+
+    @gen.coroutine
+    def get(self):
+        args, kwargs = yield self.args_kwargs()
+        try:
+            self.write({'response': self.func[0](*args, **kwargs)})
+        except Exception as e:
+            self.write({'error': str(e)+"aa"})
+
+class _AsyncBase(_Handler):
+    TYPE = 'asynchronous'
+
+    @gen.coroutine
+    def get(self):
+        args, kwargs = yield self.args_kwargs()
+        try:
+            ret = yield self.func[0](*args, **kwargs)
+      # return JSON so we get the correct type of the return value
+            self.write({'response': ret})
+        except Exception as e:
+            self.write({'error': str(e)})
+
+class _ThreadPoolBase(_Handler):
+    executor = ThreadPoolExecutor(200)
+    TYPE = 'threadpool'
+
+    @gen.coroutine
+    def get(self):
+        args, kwargs = yield self.args_kwargs()
+        try:
+            data = yield self.run(self.func,args,kwargs)
+            self.write({'response': data})
+        except Exception as e:
+            self.write({'error': str(e)+"aa"})
+
+    @run_on_executor
+    def run(self,func,args,kwargs):
+        return self.func[0](*args, **kwargs)
+
+class _MessageQueueBase(_Handler):
+    TYPE = 'mq async'
+
+    @gen.coroutine
+    def get(self):
+        args, kwargs = yield self.args_kwargs()
+        try:
+            r.lpush('task',msgpack.packb([self.func[0].func_name,args,kwargs]))
+            self.write({'response': 'commit'})
+        except Exception as e:
+            self.write({'error': str(e)})
