@@ -1,2 +1,4 @@
 *.pyc
 *.swp
+dist
+swift_rpc.egg-info/

@@ -2,6 +2,7 @@ from tornado import gen, log, web
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 from swift_rpc.scheduler import q,r
+from config import *
 import msgpack
 
 class _Handler(web.RequestHandler):
@@ -14,11 +15,27 @@ class _Handler(web.RequestHandler):
 
     @gen.coroutine
     def prepare(self):
-        ua = self.request.headers.get('User-Agent')
-        if ua not in self.__ALLOWEDUA__:
-            self.log.info('Received request from UA {0}'.format(ua))
-            self.write({'error': 'User agent not allowed: {0}'.format(ua)})
-            self.finish()
+        if SAFE_UA_MODE:
+            ua = self.request.headers.get('User-Agent')
+            #if ua not in self.__ALLOWEDUA__:
+            if ua not in UA_ALLOW:
+                self.log.info('Received request from UA {0}'.format(ua))
+                self.write({'error': 'User agent not allowed: {0}'.format(ua)})
+                self.finish()
+
+        if SAFE_TOKEN_MODE:
+            token = self.request.headers.get('Token')
+            if token not in TOKEN_ALLOW:
+                self.log.info('Received request from Token {0}'.format(token))
+                self.write({'error': 'Token not allowed: {0}'.format(token)})
+                self.finish()
+
+        if REMOTE_IP_MODE:
+            remote_ip = self.request.headers.get("X-Real-IP")
+            if remote_ip not in REMOTE_ALLOW:
+                self.log.info('Received request from REMOTE IP {0}'.format(remote_ip))
+                self.write({'error': 'IP not allowed: {0}'.format(remote_ip)})
+                self.finish()
 
     @gen.coroutine
     def args_kwargs(self):
