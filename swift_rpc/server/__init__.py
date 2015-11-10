@@ -5,6 +5,7 @@ from tornado import (
     web
 )
 
+from tornado.httpserver import HTTPServer 
 from .handlers import _AsyncBase, _Base, _ThreadPoolBase, _MessageQueueBase
 
 class RPCServer(object):
@@ -44,9 +45,11 @@ class RPCServer(object):
 #        app.listen(int(port),host)
 #        ioloop.IOLoop.current().start()
 
-        from tornado.httpserver import HTTPServer 
         server = HTTPServer(web.Application(self._routes, debug=True),xheaders=True) 
         server.listen(port, host)
         ioloop.IOLoop.current().start()
 
 __all__ = ('RPCServer')
+
+if __name__ == "__main__":
+    pass

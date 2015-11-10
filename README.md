@@ -12,6 +12,9 @@ Change Log:
 Version: 2.1
 1. 解决Nginx针对RPC负载均衡时，无法正常获取remote_ip
 
+Version: 2.2
+1. rq enqueue塞入任务队列时的一个bug,已经绕过解决
+
 Future:  
 1. 使用rsa保证rpc通信安全
 2. swift_rpc完善RQ异步任务队列

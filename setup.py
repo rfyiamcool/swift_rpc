@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
         name = "swift_rpc",
-        version = "2.1",
+        version = "2.2",
         author = "ruifengyun",
         author_email = "rfyiamcool@163.com",
         description = "tornado rpc",
@@ -15,7 +15,7 @@ setup(
         url = "https://github.com/rfyiamcool",
         packages = find_packages(),
         long_description = read('README.md'),
-        install_requires=['ConfigParser','redis'],
+        install_requires=['ConfigParser','redis','rq','msgpack-python'],
         classifiers = [
              'Development Status :: 2 - Pre-Alpha',
              'Intended Audience :: Developers',

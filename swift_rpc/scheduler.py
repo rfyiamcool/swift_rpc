@@ -1,7 +1,7 @@
 #coding:utf-8
-from Queue import Queue
 from serialize import serialize, deserialize
 from config import *
+from rq import Queue
 import redis
 
 class MessageQueue(object):
@@ -31,8 +31,8 @@ class MessageQueue(object):
     def keys(self, pattern="*"):
         return self._conn.keys(pattern)
 
-q = Queue()
-r = MessageQueue(REDIS_HOST,REDIS_PORT)._conn
+redis_conn = MessageQueue(REDIS_HOST,REDIS_PORT)._conn
+q = Queue(connection=redis_conn)
 
 if __name__ == "__main__":
     print r.keys()[:10]

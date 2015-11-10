@@ -1,9 +1,8 @@
 from tornado import gen, log, web
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
-from swift_rpc.scheduler import q,r
+from swift_rpc.scheduler import q,redis_conn
 from config import *
-import msgpack
 
 class _Handler(web.RequestHandler):
     __ALLOWEDUA__ = ('swift_rpc')
@@ -47,7 +46,6 @@ class _Handler(web.RequestHandler):
             del self.request.arguments['args']
       # keyword arguments get passed as a list so extract them
         kwargs = dict([(k, v[0]) for k, v in self.request.arguments.items()])
-        print kwargs
         raise gen.Return((args, kwargs))
 
 class _Base(_Handler):
@@ -93,13 +91,22 @@ class _ThreadPoolBase(_Handler):
         return self.func[0](*args, **kwargs)
 
 class _MessageQueueBase(_Handler):
-    TYPE = 'mq async'
+    TYPE = 'mqasync'
 
     @gen.coroutine
     def get(self):
         args, kwargs = yield self.args_kwargs()
         try:
-            r.lpush('task',msgpack.packb([self.func[0].func_name,args,kwargs]))
+            result = q.enqueue('api.'+self.func[0].func_name,*args,**kwargs)
+            """
+            will fix better
+            #result = q.enqueue("test_server."+self.func[0].func_name, *args,**kwargs)
+#           r.lpush('task',msgpack.packb([self.func[0].func_name,args,kwargs]))
+            """
             self.write({'response': 'commit'})
         except Exception as e:
+            print str(e)
             self.write({'error': str(e)})
+
+if __name__ == "__main__":
+    pass
