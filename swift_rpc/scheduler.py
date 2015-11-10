@@ -33,3 +33,6 @@ class MessageQueue(object):
 
 q = Queue()
 r = MessageQueue(REDIS_HOST,REDIS_PORT)._conn
+
+if __name__ == "__main__":
+    print r.keys()[:10]
