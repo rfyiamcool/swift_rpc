@@ -7,6 +7,15 @@ swift_rpc是用tornado实现的rpc服务,现在开放了四个调度接口:
 3. register_pool  借助于futures.ThreadPoolExecutor实现线程池  
 4. register_mq 通过mq异步调用方法，适合后端长时间运算或耗时的调用
 
+Change Log:  
+
+Version: 2.1
+1. 解决Nginx针对RPC负载均衡时，无法正常获取remote_ip
+
+Future:  
+1. 使用rsa保证rpc通信安全
+2. swift_rpc完善RQ异步任务队列
+
 Tornado RPC Server Usage:
 
 ```
