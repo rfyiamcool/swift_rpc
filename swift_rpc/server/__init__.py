@@ -42,11 +42,8 @@ class RPCServer(object):
     def start(self, host, port):
         self.log.info('Starting server on port {0}'.format(port))
 #        app = web.Application(self._routes, debug=True)
-#        app.listen(int(port),host)
-#        ioloop.IOLoop.current().start()
-
         server = HTTPServer(web.Application(self._routes, debug=True),xheaders=True) 
-        server.listen(port, host)
+        server.listen(int(port), host)
         ioloop.IOLoop.current().start()
 
 __all__ = ('RPCServer')

@@ -16,7 +16,6 @@ def test_block(args):
 def test_async(arg):
     raise gen.Return("You said async %s" % arg)
 
-
 if __name__ == "__main__":
     server = RPCServer()
     server.register(test)

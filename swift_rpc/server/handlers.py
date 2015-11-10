@@ -1,7 +1,7 @@
 from tornado import gen, log, web
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
-from swift_rpc.scheduler import q,redis_conn
+from swift_rpc.mq import q,redis_conn
 from config import *
 
 class _Handler(web.RequestHandler):
