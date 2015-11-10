@@ -17,9 +17,6 @@ def test(args,**kwargs):
 import chardet
 def get_result(job_id):
     return redis_conn.hgetall(job_id)
-#    job_id = job_id.split(':')[2] 
-#    res = fetch(job_id.decode("utf-8", "ignore"),redis_conn)
-#    return res.to_dict()
 
 def test_block(args):
     time.sleep(5)

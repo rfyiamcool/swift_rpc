@@ -23,6 +23,7 @@ Version: 2.3
 Future:  
 1. 使用rsa保证rpc通信安全  
 2. swift_rpc完善RQ异步任务队列  
+3. 增加request json body的识别,在这基础上做安全的封装
 
 Tornado RPC Server Usage:
 
