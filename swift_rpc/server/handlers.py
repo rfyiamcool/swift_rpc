@@ -1,7 +1,8 @@
+#coding:utf-8
 from tornado import gen, log, web
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
-from swift_rpc.mq import q,redis_conn
+from swift_rpc.mq import rq_conn,redis_conn
 from config import *
 
 class _Handler(web.RequestHandler):
@@ -58,7 +59,7 @@ class _Base(_Handler):
         try:
             self.write({'response': self.func[0](*args, **kwargs)})
         except Exception as e:
-            self.write({'error': str(e)+"aa"})
+            self.write({'error': str(e)})
 
 class _AsyncBase(_Handler):
     TYPE = 'asynchronous'
@@ -97,13 +98,13 @@ class _MessageQueueBase(_Handler):
     def get(self):
         args, kwargs = yield self.args_kwargs()
         try:
-            result = q.enqueue('api.'+self.func[0].func_name,*args,**kwargs)
+            job = rq_conn.enqueue('api.'+self.func[0].func_name,*args,**kwargs)
             """
             will fix better
             #result = q.enqueue("test_server."+self.func[0].func_name, *args,**kwargs)
 #           r.lpush('task',msgpack.packb([self.func[0].func_name,args,kwargs]))
             """
-            self.write({'response': 'commit'})
+            self.write({'response': 'commit','job':job.key})
         except Exception as e:
             print str(e)
             self.write({'error': str(e)})

@@ -2,6 +2,7 @@
 from serialize import serialize, deserialize
 from config import *
 from rq import Queue
+from rq.job import Job
 import redis
 
 class MessageQueue(object):
@@ -32,7 +33,8 @@ class MessageQueue(object):
         return self._conn.keys(pattern)
 
 redis_conn = MessageQueue(REDIS_HOST,REDIS_PORT)._conn
-q = Queue(connection=redis_conn)
+rq_conn = Queue(connection=redis_conn)
+fetch = Job.fetch
 
 if __name__ == "__main__":
     print r.keys()[:10]

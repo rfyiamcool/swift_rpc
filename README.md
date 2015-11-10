@@ -2,7 +2,7 @@
 
 swift_rpc是用tornado实现的rpc服务,现在开放了四个调度接口:  
 
-(更多的关于swift的开发信息)[http://xiaorui.cc]
+[更多的关于swift的开发信息](http://xiaorui.cc)
 
 1. register 普通接口调用模式,最纯粹最简单  
 2. register_async 借助于tornado gen.coroutine实现的非堵塞调用  

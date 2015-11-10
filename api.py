@@ -1,3 +1,4 @@
+#coding:utf-8
 def go(*args,**kwargs):
     print 'this go func in MQ'
     return "You said "
