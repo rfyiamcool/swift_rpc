@@ -15,11 +15,9 @@ class RPCServer(object):
     def __init__(self,config):
         self.config = config
         self._routes = []
-        if config.LOGFILE:
-            self.log = get_logger(config.LOGFILE)
-        else:
-            self.log = log.logging.getLogger()
-        log.enable_pretty_logging(logger=self.log)
+        self.log = log.logging.getLogger("transmit.%s" % __name__)
+        log.logging.config.dictConfig(config.LOGCONFIG)
+        #log.enable_pretty_logging(logger=self.log)
         self.register_async(self._getroutes)
 
     @gen.coroutine
