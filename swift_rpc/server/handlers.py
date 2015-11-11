@@ -1,4 +1,5 @@
 #coding:utf-8
+import json
 from tornado import gen, log, web
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
@@ -42,10 +43,15 @@ class _Handler(web.RequestHandler):
     def args_kwargs(self):
         args = []
       # support positional arguments
+        if self.request.headers.get('Content-Type') == "application/json":
+            data = json.loads(self.request.body)
+            args = data.get('args',[])
+            kwargs = data.get('kwargs',{})
+            raise gen.Return((args, kwargs))
+
         if 'args' in self.request.arguments:
             args = self.request.arguments['args']
             del self.request.arguments['args']
-      # keyword arguments get passed as a list so extract them
         kwargs = dict([(k, v[0]) for k, v in self.request.arguments.items()])
         raise gen.Return((args, kwargs))
 
@@ -97,6 +103,7 @@ class _MessageQueueBase(_Handler):
     @gen.coroutine
     def get(self):
         args, kwargs = yield self.args_kwargs()
+        print args,kwargs
         try:
             job = rq_conn.enqueue('api.'+self.func[0].func_name,*args,**kwargs)
             """

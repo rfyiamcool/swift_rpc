@@ -3,20 +3,18 @@ import requests
 from urlparse import urljoin
 
 class _RPC(object):
-     __HEADERS__ = {'User-Agent': 'swift_rpc'}
+     __HEADERS__ = {'User-Agent': 'swift_rpc','Content-Type':'application/json'}
 
      def __init__(self, server, name):
         self._name = name
         self._url = urljoin(server, name)
     
      def __call__(self, *args, **kwargs):
-        if args:
-         # the server will turn this list into
-         # positional args
-            kwargs['args'] = args
-    
+        params = {}
+        params['args'] = args
+        params['kwargs'] = kwargs
         try:
-            resp = requests.get(self._url, data=kwargs, headers=self.__HEADERS__)
+            resp = requests.get(self._url, data=json.dumps(params), headers=self.__HEADERS__)
         except Exception as e:
             raise RPCClient.FailedCall(e)
     

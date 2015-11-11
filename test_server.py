@@ -12,8 +12,12 @@ from swift_rpc.mq import fetch
 from config import *
 from api import *
 
-def test(args,**kwargs):
-    return "You said %s" % args
+def test(args):
+    return "this is test %s"%(args)
+
+def test_args(a,b,name='xiaorui.cc'):
+    print a,b,name
+    return "this is test %s %s"%(a,name)
 
 def get_result(job_id):
     return redis_conn.hgetall(job_id)
@@ -24,11 +28,12 @@ def test_block(args):
 
 @gen.coroutine
 def test_async(arg):
-    return gen.Return("You said async %s" % arg)
+    return gen.Return("this is test_async async %s" % arg)
 
 if __name__ == "__main__":
     server = RPCServer()
     server.register(test)
+    server.register(test_args)
     server.register(get_result)
     server.register_async(test_async)
     server.register_pool(test_block)
