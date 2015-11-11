@@ -14,7 +14,7 @@ from api import *
 
 def test(args,**kwargs):
     return "You said %s" % args
-import chardet
+
 def get_result(job_id):
     return redis_conn.hgetall(job_id)
 

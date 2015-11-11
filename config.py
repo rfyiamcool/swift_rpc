@@ -1,5 +1,7 @@
 #coding:utf-8
 
+LOGFILE = 'debug.log'
+
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT  = 6379
 

@@ -8,13 +8,16 @@ from tornado import (
 
 from tornado.httpserver import HTTPServer 
 from .handlers import _AsyncBase, _Base, _ThreadPoolBase, _MessageQueueBase
+from swift_rpc.log import get_logger
 
 class RPCServer(object):
 
-    def __init__(self):
+    def __init__(self,logfile=None):
         self._routes = []
-        self.log = log.logging.getLogger()
-        self.log.setLevel(log.logging.INFO)
+        if logfile:
+            self.log = get_logger(logfile)
+        else:
+            self.log = log.logging.getLogger()
         log.enable_pretty_logging(logger=self.log)
         self.register_async(self._getroutes)
 
