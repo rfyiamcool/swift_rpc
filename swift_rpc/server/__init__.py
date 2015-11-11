@@ -12,10 +12,11 @@ from swift_rpc.log import get_logger
 
 class RPCServer(object):
 
-    def __init__(self,logfile=None):
+    def __init__(self,config):
+        self.config = config
         self._routes = []
-        if logfile:
-            self.log = get_logger(logfile)
+        if config.LOGFILE:
+            self.log = get_logger(config.LOGFILE)
         else:
             self.log = log.logging.getLogger()
         log.enable_pretty_logging(logger=self.log)
@@ -27,7 +28,7 @@ class RPCServer(object):
 
     def _make(self, func, base):
         name = func.__name__
-        handler = type(name, (base,), {'func': [func]})
+        handler = type(name, (base,), {'func': [func],'config':self.config})
         self._routes.append((r'/{0}'.format(name), handler))
         self.log.info('Registered {0} command {1}'.format(base.TYPE, name))
 
