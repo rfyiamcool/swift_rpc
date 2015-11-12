@@ -2,25 +2,36 @@ import json
 import base64
 import requests
 from urlparse import urljoin
+from swift_rpc.aeslib import prpcrypt
 
 class _RPC(object):
 
-     def __init__(self, server, name, encryption):
+     def __init__(self, server, name, encryption, encryption_key):
         self.encryption = encryption
+        self.encryption_key = encryption_key
         self.__HEADERS__ = {'User-Agent': 'swift_rpc','Content-Type':'application/json'}
         if encryption:
-            self.__HEADERS__ = {'User-Agent': 'swift_rpc','Content-Type':'application/json','Encryption':encryption}
-        
+            self.__HEADERS__['Encryption'] = self.encryption
         self._name = name
         self._url = urljoin(server, name)
-    
+
+     def crypto_parser(self,params): 
+        if not self.encryption:
+            data = params
+        if self.encryption == "base64":
+            data = base64.encodestring(params)
+        elif self.encryption == "aes":
+            salt = prpcrypt(self.encryption_key)
+            data = salt.encrypt(params)
+        return data
+
      def __call__(self, *args, **kwargs):
         params = {}
         params['args'] = args
         params['kwargs'] = kwargs
         post_data = json.dumps(params)
         if self.encryption:
-            post_data = base64.encodestring(post_data)
+            post_data = self.crypto_parser(post_data)
         try:
             resp = requests.get(self._url, data=post_data, headers=self.__HEADERS__)
         except Exception as e:
@@ -51,8 +62,9 @@ class RPCClient(object):
         '_getAttributeNames',
     ]
 
-    def __init__(self, server,encryption=None, unallowed_calls=[], load_remotes=True):
+    def __init__(self, server,encryption=None, encryption_key=None, unallowed_calls=[], load_remotes=True):
         self.encryption = encryption
+        self.encryption_key = encryption_key
         if server.startswith('http'):
             self._server = server
         else:
@@ -62,7 +74,7 @@ class RPCClient(object):
             self.__loadremoteroutes()
 
     def __send(self, name):
-        return _RPC(self._server, name, self.encryption)
+        return _RPC(self._server, name, self.encryption,self.encryption_key)
 
     def __remoteroutes(self):
         return self._getroutes()

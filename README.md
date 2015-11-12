@@ -23,6 +23,9 @@ Version: 2.3
 Version: 2.4  
 1. 日志及加密模式
 
+Version: 2.5   
+1. 加入自定义的AES加密算法支持
+
 Future:  
 1. 统一配置配置文件  
 2. 使用rsa保证rpc通信安全  

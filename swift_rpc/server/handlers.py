@@ -5,6 +5,7 @@ from tornado import gen, log, web
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 from swift_rpc.mq import rq_conn,redis_conn
+from swift_rpc.aeslib import prpcrypt
 
 class _Handler(web.RequestHandler):
     __ALLOWEDUA__ = ('swift_rpc')
