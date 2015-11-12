@@ -20,9 +20,12 @@ Version: 2.2
 Version: 2.3  
 1. 解决了curl调用rq的get_result时出现的0x80 code异常
 
+Version: 2.4  
+1. 日志及加密模式
+
 Future:  
-1. 统一配置配置文件
-2. 使用rsa保证rpc通信安全  
+1. 统一配置配置文件  
+2. 使用rsa保证rpc通信安全 
 3. swift_rpc完善RQ异步任务队列  
 4. 增加request json body的识别,在这基础上做安全的封装
 
@@ -31,6 +34,11 @@ Future:
 ```
 curl -H "Content-Type: application/json" -H "User-Agent: swift_rpc" -X GET -d '{"args":"[123,456]","kwargs":{"name":1}}' http://localhost:8080/test_args
 curl -H "Content-Type: application/json" -H "User-Agent: swift_rpc" -X GET -d '{"args":"123"}' http://localhost:8080/test
+```
+
+测试选择加密模式:  
+```
+curl -H "Encryption: base64" -H "Content-Type: application/json" -H "User-Agent: swift_rpc" -X GET -d '{"args": [123, 456], "kwargs": {"name": 1}}'  http://localhost:8080/test_args
 ```
 
 测试arguments的args,kwargs:  

@@ -7,7 +7,7 @@ def read(fname):
 
 setup(
         name = "swift_rpc",
-        version = "2.3",
+        version = "2.4",
         author = "ruifengyun",
         author_email = "rfyiamcool@163.com",
         description = "tornado rpc",

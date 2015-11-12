@@ -1,5 +1,6 @@
 #coding:utf-8
 import json
+import base64
 from tornado import gen, log, web
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
@@ -43,7 +44,11 @@ class _Handler(web.RequestHandler):
         args = []
       # support positional arguments
         if self.request.headers.get('Content-Type') == "application/json":
-            data = json.loads(self.request.body)
+            de_string = self.request.body
+            if self.request.headers.get('Encryption') == "base64":
+                print 123
+                de_string = base64.decodestring(self.request.body)
+            data = json.loads(de_string)
             args = data.get('args',[])
             kwargs = data.get('kwargs',{})
             raise gen.Return((args, kwargs))
