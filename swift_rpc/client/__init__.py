@@ -1,11 +1,16 @@
 import json
+import base64
 import requests
 from urlparse import urljoin
 
 class _RPC(object):
-     __HEADERS__ = {'User-Agent': 'swift_rpc','Content-Type':'application/json'}
 
-     def __init__(self, server, name):
+     def __init__(self, server, name, encryption):
+        self.encryption = encryption
+        self.__HEADERS__ = {'User-Agent': 'swift_rpc','Content-Type':'application/json'}
+        if encryption:
+            self.__HEADERS__ = {'User-Agent': 'swift_rpc','Content-Type':'application/json','Encryption':encryption}
+        
         self._name = name
         self._url = urljoin(server, name)
     
@@ -13,8 +18,11 @@ class _RPC(object):
         params = {}
         params['args'] = args
         params['kwargs'] = kwargs
+        post_data = json.dumps(params)
+        if self.encryption:
+            post_data = base64.encodestring(post_data)
         try:
-            resp = requests.get(self._url, data=json.dumps(params), headers=self.__HEADERS__)
+            resp = requests.get(self._url, data=post_data, headers=self.__HEADERS__)
         except Exception as e:
             raise RPCClient.FailedCall(e)
     
@@ -43,7 +51,8 @@ class RPCClient(object):
         '_getAttributeNames',
     ]
 
-    def __init__(self, server, unallowed_calls=[], load_remotes=True):
+    def __init__(self, server,encryption=None, unallowed_calls=[], load_remotes=True):
+        self.encryption = encryption
         if server.startswith('http'):
             self._server = server
         else:
@@ -53,7 +62,7 @@ class RPCClient(object):
             self.__loadremoteroutes()
 
     def __send(self, name):
-        return _RPC(self._server, name)
+        return _RPC(self._server, name, self.encryption)
 
     def __remoteroutes(self):
         return self._getroutes()

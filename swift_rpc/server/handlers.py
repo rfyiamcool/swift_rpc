@@ -46,7 +46,6 @@ class _Handler(web.RequestHandler):
         if self.request.headers.get('Content-Type') == "application/json":
             de_string = self.request.body
             if self.request.headers.get('Encryption') == "base64":
-                print 123
                 de_string = base64.decodestring(self.request.body)
             data = json.loads(de_string)
             args = data.get('args',[])
