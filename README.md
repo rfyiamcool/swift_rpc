@@ -25,7 +25,7 @@ Version: 2.4
 
 Future:  
 1. 统一配置配置文件  
-2. 使用rsa保证rpc通信安全 
+2. 使用rsa保证rpc通信安全  
 3. swift_rpc完善RQ异步任务队列  
 4. 增加request json body的识别,在这基础上做安全的封装
 

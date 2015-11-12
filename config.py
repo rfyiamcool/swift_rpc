@@ -15,6 +15,8 @@ TOKEN_ALLOW = ['']
 REMOTE_IP_MODE = False
 REMOTE_ALLOW = ['']
 
+ENCRYPTION_AES= "123xiaorui456789"
+
 LOGCONFIG = {
     "version": 1,
     "disable_existing_loggers": False,

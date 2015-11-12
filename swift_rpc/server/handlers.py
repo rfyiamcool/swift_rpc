@@ -42,11 +42,14 @@ class _Handler(web.RequestHandler):
     @gen.coroutine
     def args_kwargs(self):
         args = []
-      # support positional arguments
         if self.request.headers.get('Content-Type') == "application/json":
             de_string = self.request.body
-            if self.request.headers.get('Encryption') == "base64":
+            encryption = self.request.headers.get('Encryption')
+            if encryption == "base64":
                 de_string = base64.decodestring(self.request.body)
+            elif encryption == "aes":
+                salt = prpcrypt(self.config.ENCRYPTION_AES)
+                de_string = salt.decrypt(self.request.body)
             data = json.loads(de_string)
             args = data.get('args',[])
             kwargs = data.get('kwargs',{})
