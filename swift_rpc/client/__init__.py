@@ -23,7 +23,7 @@ class _RPC(object):
         elif self.encryption == "aes":
             salt = prpcrypt(self.encryption_key)
             data = salt.encrypt(params)
-        return data
+        return data if data else params
 
      def __call__(self, *args, **kwargs):
         params = {}
