@@ -1,13 +1,13 @@
 # swift_rpc
 
-swift_rpc是用tornado实现的rpc服务,现在开放了四个调度接口:  
-
-[更多的关于swift的开发信息](http://xiaorui.cc)
+swift_rpc是用tornado实现的rpc服务,而且支持多种方式加密传输, 现在开放了四个调度接口:  
 
 1. register 普通接口调用模式,最纯粹最简单    
 2. register_async 借助于tornado gen.coroutine实现的非堵塞调用  
 3. register_pool  借助于futures.ThreadPoolExecutor实现线程池  
 4. register_mq 通过mq异步调用方法，适合后端长时间运算或耗时的调用
+
+[更多的关于swift的开发信息](http://xiaorui.cc)
 
 Change Log:  
 
@@ -27,9 +27,8 @@ Version: 2.5
 1. 加入自定义的AES加密算法支持
 
 Future:  
-1. 统一配置配置文件(yaml\configparser)     
-2. swift_rpc完善RQ异步任务队列  
-3. json web token和rsa组合
+1. json web token和rsa组合
+2. 完善文档
 
 
 测试json body的args,kwargs:  
