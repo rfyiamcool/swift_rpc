@@ -9,6 +9,9 @@ swift_rpc是用tornado实现的rpc服务,而且支持多种方式加密传输, �
 
 [更多的关于swift的开发信息](http://xiaorui.cc)
 
+# TO DO
+1. 加入jwt认证机制
+
 Change Log:  
 
 Version: 2.1  
